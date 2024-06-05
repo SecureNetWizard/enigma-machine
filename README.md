@@ -1,5 +1,23 @@
 # EnigmaMachine
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+  - [Rotors](#rotors)
+  - [Reflector](#reflector)
+  - [Plugboard](#plugboard)
+  - [Initial Positions](#initial-positions)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Overview
 
 The `EnigmaMachine` is a Java software implementation of the historical Enigma machine used for encryption and decryption during World War II. Just like the physical Enigma machine, this software version includes dials, rotors, a reflector, and a plugboard, each of which must be initialized correctly to encrypt or decrypt messages.
@@ -24,8 +42,8 @@ Ensure you have the following installed:
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/EnigmaMachine.git
-    cd EnigmaMachine
+    git clone https://github.com/yourusername/enigma-machine.git
+    cd enigma-machine
     ```
 
 2. **Build the project:**
@@ -39,10 +57,10 @@ Ensure you have the following installed:
 
     ```java
     EnigmaMachine enigma = new EnigmaMachine();
-    enigma.setRotors(new int[]{1, 2, 3}); // Example rotor configuration
-    enigma.setReflector("B"); // Example reflector type
-    enigma.setPlugboard("AB CD EF"); // Example plugboard settings
-    enigma.setInitialPositions(new char[]{'A', 'A', 'A'}); // Example initial positions
+    enigma.setRotors(1, 2, 3); // Example rotor configuration (3 out of 5)
+    enigma.setReflector("B"); // Example reflector type (B or C)
+    enigma.setPlugboard("SZ GT DV KU FO MY EW JN IX LQ"); // Example plugboard settings (10 letter pairs)
+    enigma.setInitialPositions('A', 'A', 'A'); // Example initial positions
     ```
 
 2. **Encrypt a message:**
@@ -87,16 +105,26 @@ Set the initial positions of the rotors. Example: `new char[]{'A', 'A', 'A'}` se
 public class Main {
     public static void main(String[] args) {
         EnigmaMachine enigma = new EnigmaMachine();
-        enigma.setRotors(new int[]{1, 2, 3});
+        enigma.setRotors(1, 2, 3);
         enigma.setReflector("B");
         enigma.setPlugboard("AB CD EF");
-        enigma.setInitialPositions(new char[]{'A', 'A', 'A'});
+        enigma.setInitialPositions('A', 'A', 'A');
 
         String encryptedMessage = enigma.encrypt("HELLO WORLD");
         System.out.println("Encrypted: " + encryptedMessage);
 
-        enigma.setInitialPositions(new char[]{'A', 'A', 'A'});
+        enigma.setInitialPositions('A', 'A', 'A');
         String decryptedMessage = enigma.decrypt(encryptedMessage);
         System.out.println("Decrypted: " + decryptedMessage);
     }
 }
+```
+
+## Contributing
+Contributions are welcome! Please fork this repository and submit pull requests for any enhancements or bug fixes.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Acknowledgements
+This project is inspired by the historical Enigma machine and the many cryptographic enthusiasts who keep its legacy alive.
