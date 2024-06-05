@@ -22,44 +22,40 @@ package org.pi.encryption.enigma;
  * @author repos@slytechs.com
  *
  */
-public class Plugboard implements EncryptLetter {
-	
+public class Plugboard {
+
 	public static final int SWITCH_ENTRIES = 10;
 	public static final int SWITCH_POSITIONS = 26;
 
 	private final int[] table = new int[SWITCH_POSITIONS];
-	
+
 	public Plugboard(String switchString) {
 		String[] c = switchString.toUpperCase().split(" ");
-		
+
 		if (c.length != SWITCH_ENTRIES)
 			throw new IllegalArgumentException("invalid pairs in the switchString");
-		
-		for (int i = 0; i < SWITCH_POSITIONS; i ++)
+
+		for (int i = 0; i < SWITCH_POSITIONS; i++)
 			table[i] = i;
-		
-		for (String pair: c) {
+
+		for (String pair : c) {
 			if (pair.length() != 2)
 				throw new IllegalArgumentException("invalid pairs in the switchString");
-			
+
 			int a = pair.charAt(0) - 'A';
 			int b = pair.charAt(1) - 'A';
-			
-			if(a > SWITCH_POSITIONS || b > SWITCH_POSITIONS)
+
+			if (a > SWITCH_POSITIONS || b > SWITCH_POSITIONS)
 				throw new IllegalArgumentException("pairs are out of bounds in the switchString");
-			
+
 			table[a] = b;
 			table[b] = a;
 		}
 	}
 
-	/**
-	 * @see org.pi.encryption.enigma.EncryptLetter#applyInt(int)
-	 */
-	@Override
-	public int applyInt(int ch) {
+	public int exchange(int ch) {
 		ch = table[ch];
-		
+
 		return ch;
 	}
 

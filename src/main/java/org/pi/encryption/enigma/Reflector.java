@@ -88,7 +88,7 @@ import java.util.Objects;
  * @author repos@slytechs.com
  *
  */
-public class Reflector implements EncryptLetter {
+public class Reflector {
 
 	public static final int REFLECTOR_B = 0;
 	public static final int REFLECTOR_C = 1;
@@ -169,11 +169,7 @@ public class Reflector implements EncryptLetter {
 		settings = REFLECTORS[index];
 	}
 
-	/**
-	 * @see org.pi.encryption.enigma.EncryptLetter#applyInt(int)
-	 */
-	@Override
-	public int applyInt(int ch) {
+	public int reflect(int ch) {
 		ch = settings[ch];
 
 		return ch;

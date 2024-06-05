@@ -28,10 +28,10 @@ import java.util.Objects;
  * @author repos@slytechs.com
  *
  */
-public class EnigmaMachine implements EncryptLetter {
+public class EnigmaMachine {
 
 	public static void main(String[] args) {
-//		var enigma = new EnigmaMachine("SZ GT DV KU FO MY EW JN IX LQ", "B", "IV II III");
+//		var enigma = new EnigmaMachine("SZ GT DV KU FO MY EW JN IX LQ", "B", "I V III");
 		var enigma = new EnigmaMachine("SZ GT DV KU FO MY EW JN IX LQ",
 				REFLECTOR_B,
 				ROTOR_I, ROTOR_V, ROTOR_III);
@@ -46,8 +46,8 @@ public class EnigmaMachine implements EncryptLetter {
 
 		enigma.setDials(14, 9, 24);
 		clear = enigma.decrypt(cypher);
+//		clear = unescape(clear);
 		System.out.println(" Clear: " + clear);
-
 	}
 
 	private final Rotor rotor1;
@@ -64,7 +64,7 @@ public class EnigmaMachine implements EncryptLetter {
 		int[] rotors = new int[3];
 		for (int i = 0; i < rotors.length; i++) {
 			rotors[i] = switch (c[i]) {
-			
+
 			case "I" -> 0;
 			case "II" -> 1;
 			case "III" -> 2;
@@ -129,22 +129,18 @@ public class EnigmaMachine implements EncryptLetter {
 		rotor3.setDial(r3);
 	}
 
-	/**
-	 * @see org.pi.encryption.enigma.EncryptLetter#applyInt(int)
-	 */
-	@Override
-	public int applyInt(int ascii) {
-//		rotor1.rotate();
+	public int process(int ascii) {
+		rotor1.rotate();
 
-//		ascii = plugboard.applyInt(ascii);
+		ascii = plugboard.exchange(ascii);
 		ascii = rotor1.forward(ascii);
 		ascii = rotor2.forward(ascii);
 		ascii = rotor3.forward(ascii);
-		ascii = reflector.applyInt(ascii);
+		ascii = reflector.reflect(ascii);
 		ascii = rotor3.reverse(ascii);
 		ascii = rotor2.reverse(ascii);
 		ascii = rotor1.reverse(ascii);
-//		ascii = plugboard.applyInt(ascii);
+		ascii = plugboard.exchange(ascii);
 
 		return ascii;
 	}
@@ -152,7 +148,7 @@ public class EnigmaMachine implements EncryptLetter {
 	public char applyChar(char ch) {
 		ch -= 'A';
 
-		ch = (char) applyInt(ch);
+		ch = (char) process(ch);
 
 		ch += 'A';
 		return ch;
