@@ -17,11 +17,7 @@
  */
 package org.pi.encryption.enigma;
 
-import static org.pi.encryption.enigma.Reflector.*;
-import static org.pi.encryption.enigma.Rotor.*;
-
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * Enigma machine implementation. The data path is where each character
@@ -55,105 +51,96 @@ import java.util.Objects;
 public class EnigmaMachine {
 
 	public static void main(String[] args) {
-//		var enigma = new EnigmaMachine("SZ GT DV KU FO MY EW JN IX LQ", "B", "I V III");
-		var enigma = new EnigmaMachine("SZ GT DV KU FO MY EW JN IX LQ",
-				REFLECTOR_B,
-				ROTOR_I, ROTOR_V, ROTOR_III);
+		EnigmaMachine enigma = new EnigmaMachine();
+
+		enigma.setRotors(1, 2, 3);
+		enigma.setReflector("B");
+		enigma.setPlugboard("SZ GT DV KU FO MY EW JN IX LQ");
+		enigma.setInitialPositions('A', 'B', 'C');
 
 		String clear = "HELLO";
-//		clear = escape(clear);
+		clear = enigma.escape(clear);
 		System.out.println(" Clear: " + clear);
 
-		enigma.setDials(14, 9, 24);
+		enigma.setInitialPositions(14, 9, 24);
 		var cypher = enigma.encrypt(clear);
 		System.out.println("Cypher: " + cypher);
 
-		enigma.setDials(14, 9, 24);
+		enigma.setInitialPositions(14, 9, 24);
 		clear = enigma.decrypt(cypher);
-//		clear = unescape(clear);
+		clear = enigma.unescape(clear);
 		System.out.println(" Clear: " + clear);
 	}
 
-	private final Rotor rotor1;
-	private final Rotor rotor2;
-	private final Rotor rotor3;
-	private final Reflector reflector;
+	private Rotor rotor1;
+	private Rotor rotor2;
+	private Rotor rotor3;
+	private Reflector reflector;
 	private final Plugboard plugboard;
+	private int[] initialPositions;
 
-	public static int[] parseRotorsString(String rotorsRomanIndexes) {
-		String[] c = rotorsRomanIndexes.split(" ");
-		if (c.length != 3)
-			throw new IllegalArgumentException("expecting 3 rotor indexes");
+	public EnigmaMachine() {
+		this.plugboard = new Plugboard();
+		this.reflector = new Reflector(Reflector.REFLECTOR_B);
+		this.initialPositions = new int[] { 0,
+				0,
+				0 };
 
-		int[] rotors = new int[3];
-		for (int i = 0; i < rotors.length; i++) {
-			rotors[i] = switch (c[i]) {
+		setRotors(0, 1, 2);
+	}
 
-			case "I" -> 0;
-			case "II" -> 1;
-			case "III" -> 2;
-			case "IV" -> 3;
-			case "V" -> 4;
+	public void setRotors(int... rotorNumbers) {
+		if (rotorNumbers.length != 3)
+			throw new IllegalArgumentException("expected 3 rotor numbers");
 
-			default -> throw new IllegalArgumentException("invalid rotor roman index " + c[i]);
-			};
+		long validatedRotors = IntStream.of(rotorNumbers)
+				.filter(i -> i >= 0 && i < 5)
+				.count();
+		if (validatedRotors != 3)
+			throw new IllegalArgumentException("rotor numbers must be between 0 and 4 inclusive");
+
+		this.rotor3 = new Rotor(rotorNumbers[2]);
+		this.rotor2 = new Rotor(rotorNumbers[1], rotor3);
+		this.rotor1 = new Rotor(rotorNumbers[0], rotor2);
+
+		setInitialPositions(initialPositions);
+	}
+
+	public void setReflector(String reflectorLetterBorC) {
+		switch (reflectorLetterBorC.toUpperCase()) {
+		case "B":
+			this.reflector = new Reflector(Reflector.REFLECTOR_B);
+			break;
+		case "C":
+			this.reflector = new Reflector(Reflector.REFLECTOR_C);
+			break;
+
+		default:
+			throw new IllegalArgumentException("invalid reflector letter " + reflectorLetterBorC);
+		}
+	}
+
+	public void setPlugboard(String plugBoardPairs) {
+		plugboard.setPlugboard(plugBoardPairs);
+	}
+
+	public void setInitialPositions(char... initialLetterPositions) {
+		setInitialPositions(Rotor.parseDialCharacters(initialLetterPositions));
+	}
+
+	public void setInitialPositions(int... initialLetterPositions) {
+		if (initialLetterPositions.length != 3) {
+			throw new IllegalArgumentException("expected 3 positions for the 3 rotors");
 		}
 
-		return rotors;
+		this.initialPositions = initialLetterPositions;
+
+		rotor1.setDial(this.initialPositions[0]);
+		rotor2.setDial(this.initialPositions[1]);
+		rotor3.setDial(this.initialPositions[2]);
 	}
 
-	public static int parseReflectorIndex(String reflectorString) {
-		return switch (reflectorString) {
-		case "B" -> 0;
-		case "C" -> 1;
-
-		default -> throw new IllegalArgumentException("invalid reflector string");
-		};
-	}
-
-	public EnigmaMachine(String plugboard, String reflectorString, String rotorsRomanIndexes) {
-		this(plugboard, parseReflectorIndex(reflectorString), parseRotorsString(rotorsRomanIndexes));
-	}
-
-	public EnigmaMachine(String plugboard, int reflector, int... rotors) {
-		this(new Plugboard(plugboard), new Reflector(reflector), rotors[0], rotors[1], rotors[2]);
-
-		System.out.printf("plugboard=%s, reflector=%d rotors=%s%n",
-				plugboard, reflector, Arrays.asList(rotors[0], rotors[1], rotors[2]).toString());
-
-		if (rotors.length != 3)
-			throw new IllegalArgumentException("expected 3 rotor indexes");
-	}
-
-	/**
-	 * @param plugboard
-	 * @param reflector
-	 * @param rotor1
-	 * @param rotor2
-	 * @param rotor3
-	 */
-	public EnigmaMachine(Plugboard plugboard, Reflector reflector, int r1, int r2, int r3) {
-
-		this.plugboard = Objects.requireNonNull(plugboard, "plugboard");
-		this.reflector = Objects.requireNonNull(reflector, "reflector");
-		this.rotor3 = new Rotor(r3);
-		this.rotor2 = new Rotor(r2, rotor3);
-		this.rotor1 = new Rotor(r1, rotor2);
-
-		reset();
-	}
-
-	public void reset() {
-		setDials(0, 0, 0);
-	}
-
-	public void setDials(int r1, int r2, int r3) {
-		rotor1.setDial(r1);
-		rotor2.setDial(r2);
-		rotor3.setDial(r3);
-	}
-
-	public int process(int ascii) {
+	private int process(int ascii) {
 		rotor1.rotate();
 
 		ascii = plugboard.exchange(ascii);
@@ -169,7 +156,7 @@ public class EnigmaMachine {
 		return ascii;
 	}
 
-	public char applyChar(char ch) {
+	private char applyChar(char ch) {
 		ch -= 'A';
 
 		ch = (char) process(ch);
@@ -178,8 +165,7 @@ public class EnigmaMachine {
 		return ch;
 	}
 
-	private static String escape(String text) {
-
+	public String escape(String text) {
 		StringBuilder b = new StringBuilder(text.length() + 12);
 		text = text.toUpperCase();
 		final int len = text.length();
@@ -187,51 +173,131 @@ public class EnigmaMachine {
 		for (int i = 0; i < len; i++) {
 			char ch = text.charAt(i);
 			switch (ch) {
-			case '.' -> b.append("XX");
-			case ',' -> b.append("YY");
-			case '?' -> b.append("ZZ");
-			case '!' -> b.append("JC");
-			case ':' -> b.append("JA");
-			case ';' -> b.append("JB");
-			case ' ' -> b.append("QQ");
-
-			case '0' -> b.append("QZ");
-			case '1' -> b.append("AA");
-			case '2' -> b.append("BB");
-			case '3' -> b.append("CC");
-			case '4' -> b.append("DD");
-			case '5' -> b.append("EE");
-			case '6' -> b.append("FF");
-			case '7' -> b.append("GG");
-			case '8' -> b.append("HH");
-			case '9' -> b.append("II");
-
-			default -> b.append(ch);
-			};
+			case '.':
+				b.append("XX");
+				break;
+			case ',':
+				b.append("YY");
+				break;
+			case '?':
+				b.append("ZZ");
+				break;
+			case '!':
+				b.append("JC");
+				break;
+			case ':':
+				b.append("JA");
+				break;
+			case ';':
+				b.append("JB");
+				break;
+			case ' ':
+				b.append("QQ");
+				break;
+			case '0':
+				b.append("QZ");
+				break;
+			case '1':
+				b.append("AA");
+				break;
+			case '2':
+				b.append("BB");
+				break;
+			case '3':
+				b.append("CC");
+				break;
+			case '4':
+				b.append("DD");
+				break;
+			case '5':
+				b.append("EE");
+				break;
+			case '6':
+				b.append("FF");
+				break;
+			case '7':
+				b.append("GG");
+				break;
+			case '8':
+				b.append("HH");
+				break;
+			case '9':
+				b.append("II");
+				break;
+			default:
+				b.append(ch);
+				break;
+			}
 		}
 
 		return b.toString();
 	}
 
-	private String unescape(String text) {
-
-		StringBuilder b = new StringBuilder(text.length() + 12);
-		text = text.toUpperCase();
+	public String unescape(String text) {
+		StringBuilder b = new StringBuilder(text.length());
 		final int len = text.length();
 
 		for (int i = 0; i < len; i++) {
 			char ch = text.charAt(i);
-			switch (ch) {
-			case '.' -> b.append("XX");
-			case ',' -> b.append("YY");
-			case '?' -> b.append("ZZ");
-			case '!' -> b.append("JC");
-			case ':' -> b.append("JA");
-			case ';' -> b.append("JB");
-			case ' ' -> b.append("QQ");
-
-			default -> b.append(ch);
-			};
+			if (i + 1 < len) {
+				char nextCh = text.charAt(i + 1);
+				if (ch == 'X' && nextCh == 'X') {
+					b.append('.');
+					i++;
+				} else if (ch == 'Y' && nextCh == 'Y') {
+					b.append(',');
+					i++;
+				} else if (ch == 'Z' && nextCh == 'Z') {
+					b.append('?');
+					i++;
+				} else if (ch == 'J' && nextCh == 'C') {
+					b.append('!');
+					i++;
+				} else if (ch == 'J' && nextCh == 'A') {
+					b.append(':');
+					i++;
+				} else if (ch == 'J' && nextCh == 'B') {
+					b.append(';');
+					i++;
+				} else if (ch == 'Q' && nextCh == 'Q') {
+					b.append(' ');
+					i++;
+				} else if (ch == 'Q' && nextCh == 'Z') {
+					b.append('0');
+					i++;
+				} else if (ch == 'A' && nextCh == 'A') {
+					b.append('1');
+					i++;
+				} else if (ch == 'B' && nextCh == 'B') {
+					b.append('2');
+					i++;
+				} else if (ch == 'C' && nextCh == 'C') {
+					b.append('3');
+					i++;
+				} else if (ch == 'D' && nextCh == 'D') {
+					b.append('4');
+					i++;
+				} else if (ch == 'E' && nextCh == 'E') {
+					b.append('5');
+					i++;
+				} else if (ch == 'F' && nextCh == 'F') {
+					b.append('6');
+					i++;
+				} else if (ch == 'G' && nextCh == 'G') {
+					b.append('7');
+					i++;
+				} else if (ch == 'H' && nextCh == 'H') {
+					b.append('8');
+					i++;
+				} else if (ch == 'I' && nextCh == 'I') {
+					b.append('9');
+					i++;
+				} else {
+					b.append(ch);
+				}
+			} else {
+				b.append(ch);
+			}
 		}
 
 		return b.toString();

@@ -23,6 +23,7 @@
  */
 package org.pi.encryption.enigma;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -170,6 +171,60 @@ import java.util.Objects;
  */
 public class Rotor {
 
+	public static int[] parseDialString(String dialPositions) {
+		dialPositions = dialPositions.replaceAll("\\s+", "").toUpperCase();
+		if (dialPositions.length() != 3)
+			throw new IllegalArgumentException("expecting 3 initial rotor positions " + dialPositions);
+
+		return new int[] {
+				dialPositions.charAt(0) - 'A',
+				dialPositions.charAt(1) - 'A',
+				dialPositions.charAt(2) - 'A',
+		};
+	}
+
+	public static int[] parseDialCharacters(char[] dialPositions) {
+		if (dialPositions.length != 3)
+			throw new IllegalArgumentException("expecting 3 initial rotor positions " + Arrays.asList(dialPositions));
+
+		return new int[] {
+				dialPositions[0] - 'A',
+				dialPositions[1] - 'A',
+				dialPositions[2] - 'A',
+		};
+	}
+
+	public static int[] parseRotorsString(String rotorsRomanIndexes) {
+		String[] c = rotorsRomanIndexes.split(" ");
+		if (c.length != 3)
+			throw new IllegalArgumentException("expecting 3 rotor indexes");
+
+		int[] rotors = new int[3];
+		for (int i = 0; i < rotors.length; i++) {
+			switch (c[i]) {
+			case "I":
+				rotors[i] = 0;
+				break;
+			case "II":
+				rotors[i] = 1;
+				break;
+			case "III":
+				rotors[i] = 2;
+				break;
+			case "IV":
+				rotors[i] = 3;
+				break;
+			case "V":
+				rotors[i] = 4;
+				break;
+			default:
+				throw new IllegalArgumentException("invalid rotor roman index " + c[i]);
+			}
+		}
+
+		return rotors;
+	}
+
 	public static final int ROTOR_I = 0;
 	public static final int ROTOR_II = 1;
 	public static final int ROTOR_III = 2;
@@ -249,7 +304,7 @@ public class Rotor {
 		ch %= ROTOR_POSITIONS;
 
 		ch = table[ch];
-		
+
 		return ch;
 	}
 
@@ -258,7 +313,7 @@ public class Rotor {
 		ch %= ROTOR_POSITIONS;
 
 		ch = reverse[ch];
-		
+
 		return ch;
 	}
 }

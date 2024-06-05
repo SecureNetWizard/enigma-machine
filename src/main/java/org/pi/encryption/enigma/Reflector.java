@@ -89,6 +89,18 @@ import java.util.Objects;
  *
  */
 public class Reflector {
+	
+
+	public static int parseReflectorString(String reflectorString) {
+	    switch (reflectorString) {
+	        case "B":
+	            return 0;
+	        case "C":
+	            return 1;
+	        default:
+	            throw new IllegalArgumentException("invalid reflector string");
+	    }
+	}
 
 	public static final int REFLECTOR_B = 0;
 	public static final int REFLECTOR_C = 1;
@@ -174,4 +186,6 @@ public class Reflector {
 
 		return ch;
 	}
+	
+	
 }

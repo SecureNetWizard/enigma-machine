@@ -24,33 +24,38 @@ package org.pi.encryption.enigma;
  */
 public class Plugboard {
 
-	public static final int SWITCH_ENTRIES = 10;
-	public static final int SWITCH_POSITIONS = 26;
+	public static int[][] parsePlugboardPairs(String plugBoardPairs) {
+		String[] c = plugBoardPairs.toUpperCase().split("\\s+");
+		int[][] pairs = new int[c.length][];
 
-	private final int[] table = new int[SWITCH_POSITIONS];
+		if (c.length > SWITCH_MAX_ENTRIES)
+			throw new IllegalArgumentException("invalid pairs in the plugBoardPairs");
 
-	public Plugboard(String switchString) {
-		String[] c = switchString.toUpperCase().split(" ");
-
-		if (c.length != SWITCH_ENTRIES)
-			throw new IllegalArgumentException("invalid pairs in the switchString");
-
-		for (int i = 0; i < SWITCH_POSITIONS; i++)
-			table[i] = i;
-
-		for (String pair : c) {
+		for (int i = 0; i < c.length; i++) {
+			String pair = c[i];
 			if (pair.length() != 2)
-				throw new IllegalArgumentException("invalid pairs in the switchString");
+				throw new IllegalArgumentException("invalid pairs in the plugBoardPairs");
 
 			int a = pair.charAt(0) - 'A';
 			int b = pair.charAt(1) - 'A';
 
 			if (a > SWITCH_POSITIONS || b > SWITCH_POSITIONS)
-				throw new IllegalArgumentException("pairs are out of bounds in the switchString");
+				throw new IllegalArgumentException("pairs are out of bounds in the plugBoardPairs");
 
-			table[a] = b;
-			table[b] = a;
+			pairs[i] = new int[] {a, b};
 		}
+
+		return pairs;
+	}
+
+	public static final int SWITCH_MAX_ENTRIES = 10;
+	public static final int SWITCH_POSITIONS = 26;
+
+	private final int[] table = new int[SWITCH_POSITIONS];
+
+	public Plugboard() {
+		for (int i = 0; i < SWITCH_POSITIONS; i++)
+			table[i] = i;
 	}
 
 	public int exchange(int ch) {
@@ -59,4 +64,11 @@ public class Plugboard {
 		return ch;
 	}
 
+	public void setPlugboard(String plugBoardPairs) {
+		int[][] pairs = parsePlugboardPairs(plugBoardPairs);
+
+		for (int[] pair : pairs) {
+			table[pair[0]] = pair[1];
+		}
+	}
 }
