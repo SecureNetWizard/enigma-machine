@@ -202,18 +202,27 @@ public class Rotor {
 		int[] rotors = new int[3];
 		for (int i = 0; i < rotors.length; i++) {
 			switch (c[i]) {
+			case "0":
 			case "I":
 				rotors[i] = 0;
 				break;
+				
+			case "2":
 			case "II":
 				rotors[i] = 1;
 				break;
+				
+			case "3":
 			case "III":
 				rotors[i] = 2;
 				break;
+				
+			case "4":
 			case "IV":
 				rotors[i] = 3;
 				break;
+				
+			case "5":
 			case "V":
 				rotors[i] = 4;
 				break;
