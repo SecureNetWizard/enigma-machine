@@ -24,9 +24,33 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
+ * Enigma machine implementation. The data path is where each character
+ * traverses through different transformations from keyboard presses to where
+ * the encrypted character is displayed on the light board.
+ * 
+ * The cypher is bidirectional, meaning it is used to encrypt and decrypt a
+ * character. For example {@code A -> B} and {@code B -> A}.
+ * 
+ * <p>
+ * This is a list of all of the transformation steps
+ * </p>
+ * 
+ * <pre>
+ * [keyboard] 
+ *   -> [plugboard] 
+ *     -> [rotor1] 
+ *       -> [rotor2] 
+ *         -> [rotor3]
+ *           <-> [reflector] 
+ *         <- [rotor3] 
+ *       <- [rotor2] 
+ *     <- [rotor1] 
+ *   <- [plugboard]
+ * [light display]
+ * </pre>
+ * 
  * @author Sly Technologies Inc
  * @author repos@slytechs.com
- *
  */
 public class EnigmaMachine {
 
