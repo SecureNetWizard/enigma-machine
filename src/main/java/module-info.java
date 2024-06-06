@@ -18,12 +18,17 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 /**
- * 
+ * The EnigmaMachine is a Java software implementation of the historical Enigma
+ * machine used for encryption and decryption during World War II. Just like the
+ * physical Enigma machine, this software version includes dials, rotors, a
+ * reflector, and a plugboard, each of which must be initialized correctly to
+ * encrypt or decrypt messages.
  */
-module org.pi.encryption.enigma {
+module com.securenetwizard.encryption.enigma {
+	exports com.securenetwizard.encryption.enigma;
 }
