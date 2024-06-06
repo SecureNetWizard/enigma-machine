@@ -36,6 +36,16 @@ package org.pi.encryption.enigma;
 public class Plugboard {
 
     /**
+     * The maximum number of plugboard entries allowed.
+     */
+    public static final int SWITCH_MAX_ENTRIES = 10;
+
+    /**
+     * The number of switch positions (letters in the alphabet).
+     */
+    public static final int SWITCH_POSITIONS = 26;
+
+    /**
      * Parses a string of plugboard pairs and converts them into an array of integer pairs.
      * 
      * @param plugBoardPairs the string of plugboard pairs (e.g., "AB CD EF")
@@ -65,16 +75,6 @@ public class Plugboard {
 
         return pairs;
     }
-
-    /**
-     * The maximum number of plugboard entries allowed.
-     */
-    public static final int SWITCH_MAX_ENTRIES = 10;
-
-    /**
-     * The number of switch positions (letters in the alphabet).
-     */
-    public static final int SWITCH_POSITIONS = 26;
 
     /**
      * The internal table representing plugboard connections.
@@ -110,6 +110,7 @@ public class Plugboard {
 
         for (int[] pair : pairs) {
             table[pair[0]] = pair[1];
+            table[pair[1]] = pair[0];
         }
     }
 }

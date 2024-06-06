@@ -326,95 +326,171 @@ import java.util.Objects;
  * |--------------|--------------|---------------|
  * </pre>
  * 
+ * The Rotor class represents a rotor component of the Enigma machine.
+ * It is responsible for the substitution of characters as they pass through the Enigma machine.
+ * 
+ * This implementation includes settings for rotors I through V.
+ * 
+ * @version 1.0
+ * @since 2023
+ * 
+ * @see <a href="https://en.wikipedia.org/wiki/Enigma_machine">Enigma machine - Wikipedia</a>
+ * @see <a href="https://www.codesandciphers.org.uk/enigma">Enigma Cipher Machine - Codes and Ciphers</a>
+ * 
+ * <p>
+ * Example usage:
+ * 
+ * <pre>
+ * Rotor rotor = new Rotor(Rotor.ROTOR_I);
+ * rotor.setDial(0);
+ * int encryptedChar = rotor.forward(inputChar);
+ * int decryptedChar = rotor.reverse(encryptedChar);
+ * </pre>
+ * </p>
+ * 
+ * <p>
+ * Rotor Settings Table:
+ * 
+ * | Rotor Number | Input Letter | Output Letter |
+ * |--------------|--------------|---------------|
+ * | I            | A            | E             |
+ * | I            | B            | K             |
+ * | I            | C            | M             |
+ * | I            | D            | F             |
+ * | I            | E            | L             |
+ * | I            | F            | G             |
+ * | I            | G            | D             |
+ * | I            | H            | Q             |
+ * | I            | I            | V             |
+ * | I            | J            | Z             |
+ * | I            | K            | N             |
+ * | I            | L            | T             |
+ * | I            | M            | O             |
+ * | I            | N            | W             |
+ * | I            | O            | Y             |
+ * | I            | P            | H             |
+ * | I            | Q            | X             |
+ * | I            | R            | U             |
+ * | I            | S            | S             |
+ * | I            | T            | P             |
+ * | I            | U            | A             |
+ * | I            | V            | I             |
+ * | I            | W            | B             |
+ * | I            | X            | R             |
+ * | I            | Y            | C             |
+ * | I            | Z            | J             |
+ * | II           | A            | A             |
+ * | II           | B            | J             |
+ * | II           | C            | D             |
+ * | II           | D            | K             |
+ * | II           | E            | S             |
+ * | II           | F            | I             |
+ * | II           | G            | R             |
+ * | II           | H            | U             |
+ * | II           | I            | X             |
+ * | II           | J            | B             |
+ * | II           | K            | L             |
+ * | II           | L            | H             |
+ * | II           | M            | W             |
+ * | II           | N            | T             |
+ * | II           | O            | M             |
+ * | II           | P            | C             |
+ * | II           | Q            | Q             |
+ * | II           | R            | G             |
+ * | II           | S            | Z             |
+ * | II           | T            | N             |
+ * | II           | U            | P             |
+ * | II           | V            | Y             |
+ * | II           | W            | F             |
+ * | II           | X            | V             |
+ * | II           | Y            | O             |
+ * | II           | Z            | E             |
+ * | III          | A            | B             |
+ * | III          | B            | D             |
+ * | III          | C            | F             |
+ * | III          | D            | H             |
+ * | III          | E            | J             |
+ * | III          | F            | L             |
+ * | III          | G            | C             |
+ * | III          | H            | P             |
+ * | III          | I            | R             |
+ * | III          | J            | T             |
+ * | III          | K            | X             |
+ * | III          | L            | V             |
+ * | III          | M            | Z             |
+ * | III          | N            | N             |
+ * | III          | O            | Y             |
+ * | III          | P            | E             |
+ * | III          | Q            | I             |
+ * | III          | R            | W             |
+ * | III          | S            | G             |
+ * | III          | T            | A             |
+ * | III          | U            | K             |
+ * | III          | V            | M             |
+ * | III          | W            | U             |
+ * | III          | X            | S             |
+ * | III          | Y            | Q             |
+ * | III          | Z            | O             |
+ * | IV           | A            | E             |
+ * | IV           | B            | S             |
+ * | IV           | C            | O             |
+ * | IV           | D            | V             |
+ * | IV           | E            | P             |
+ * | IV           | F            | Z             |
+ * | IV           | G            | J             |
+ * | IV           | H            | A             |
+ * | IV           | I            | Y             |
+ * | IV           | J            | Q             |
+ * | IV           | K            | U             |
+ * | IV           | L            | I             |
+ * | IV           | M            | R             |
+ * | IV           | N            | H             |
+ * | IV           | O            | X             |
+ * | IV           | P            | L             |
+ * | IV           | Q            | N             |
+ * | IV           | R            | F             |
+ * | IV           | S            | T             |
+ * | IV           | T            | G             |
+ * | IV           | U            | K             |
+ * | IV           | V            | D             |
+ * | IV           | W            | C             |
+ * | IV           | X            | M             |
+ * | IV           | Y            | W             |
+ * | IV           | Z            | B             |
+ * | V            | A            | V             |
+ * | V            | B            | Z             |
+ * | V            | C            | B             |
+ * | V            | D            | R             |
+ * | V            | E            | G             |
+ * | V            | F            | I             |
+ * | V            | G            | T             |
+ * | V            | H            | Y             |
+ * | V            | I            | U             |
+ * | V            | J            | P             |
+ * | V            | K            | S             |
+ * | V            | L            | D             |
+ * | V            | M            | N             |
+ * | V            | N            | H             |
+ * | V            | O            | L             |
+ * | V            | P            | X             |
+ * | V            | Q            | A             |
+ * | V            | R            | W             |
+ * | V            | S            | M             |
+ * | V            | T            | J             |
+ * | V            | U            | Q             |
+ * | V            | V            | O             |
+ * | V            | W            | F             |
+ * | V            | X            | E             |
+ * | V            | Y            | C             |
+ * | V            | Z            | K             |
+ * |--------------|--------------|---------------|
+ * </pre>
+ * 
  * @author Sly Technologies Inc
  * @author repos@slytechs.com
  *
  */
 public class Rotor {
-
-    /**
-     * Parses the input dial positions string and returns an array of integers representing the initial rotor positions.
-     * 
-     * @param dialPositions the input dial positions string (e.g., "A B C")
-     * @return an array of integers representing the initial rotor positions
-     * @throws IllegalArgumentException if the input string is invalid
-     */
-    public static int[] parseDialString(String dialPositions) {
-        dialPositions = dialPositions.replaceAll("\\s+", "").toUpperCase();
-        if (dialPositions.length() != 3)
-            throw new IllegalArgumentException("expecting 3 initial rotor positions " + dialPositions);
-
-        return new int[] {
-            dialPositions.charAt(0) - 'A',
-            dialPositions.charAt(1) - 'A',
-            dialPositions.charAt(2) - 'A',
-        };
-    }
-
-    /**
-     * Parses the input dial positions character array and returns an array of integers representing the initial rotor positions.
-     * 
-     * @param dialPositions the input dial positions character array
-     * @return an array of integers representing the initial rotor positions
-     * @throws IllegalArgumentException if the input array is invalid
-     */
-    public static int[] parseDialCharacters(char[] dialPositions) {
-        if (dialPositions.length != 3)
-            throw new IllegalArgumentException("expecting 3 initial rotor positions " + Arrays.toString(dialPositions));
-
-        return new int[] {
-            dialPositions[0] - 'A',
-            dialPositions[1] - 'A',
-            dialPositions[2] - 'A',
-        };
-    }
-
-    /**
-     * Parses the input rotors string and returns an array of integers representing the rotor indexes.
-     * 
-     * @param rotorsRomanIndexes the input rotors string (e.g., "I II III")
-     * @return an array of integers representing the rotor indexes
-     * @throws IllegalArgumentException if the input string is invalid
-     */
-    public static int[] parseRotorsString(String rotorsRomanIndexes) {
-        String[] c = rotorsRomanIndexes.split(" ");
-        if (c.length != 3)
-            throw new IllegalArgumentException("expecting 3 rotor indexes");
-
-        int[] rotors = new int[3];
-        for (int i = 0; i < rotors.length; i++) {
-            switch (c[i]) {
-                case "0":
-                case "I":
-                    rotors[i] = 0;
-                    break;
-
-                case "2":
-                case "II":
-                    rotors[i] = 1;
-                    break;
-
-                case "3":
-                case "III":
-                    rotors[i] = 2;
-                    break;
-
-                case "4":
-                case "IV":
-                    rotors[i] = 3;
-                    break;
-
-                case "5":
-                case "V":
-                    rotors[i] = 4;
-                    break;
-                default:
-                    throw new IllegalArgumentException("invalid rotor roman index " + c[i]);
-            }
-        }
-
-        return rotors;
-    }
 
     /**
      * Rotor index for Rotor I.
@@ -477,6 +553,90 @@ public class Rotor {
     };
     // @formatter:on
 
+    /**
+     * Parses the input dial positions character array and returns an array of integers representing the initial rotor positions.
+     * 
+     * @param dialPositions the input dial positions character array
+     * @return an array of integers representing the initial rotor positions
+     * @throws IllegalArgumentException if the input array is invalid
+     */
+    public static int[] parseDialCharacters(char[] dialPositions) {
+        if (dialPositions.length != 3)
+            throw new IllegalArgumentException("expecting 3 initial rotor positions " + Arrays.toString(dialPositions));
+
+        return new int[] {
+            dialPositions[0] - 'A',
+            dialPositions[1] - 'A',
+            dialPositions[2] - 'A',
+        };
+    }
+
+    /**
+     * Parses the input dial positions string and returns an array of integers representing the initial rotor positions.
+     * 
+     * @param dialPositions the input dial positions string (e.g., "A B C")
+     * @return an array of integers representing the initial rotor positions
+     * @throws IllegalArgumentException if the input string is invalid
+     */
+    public static int[] parseDialString(String dialPositions) {
+        dialPositions = dialPositions.replaceAll("\\s+", "").toUpperCase();
+        if (dialPositions.length() != 3)
+            throw new IllegalArgumentException("expecting 3 initial rotor positions " + dialPositions);
+
+        return new int[] {
+            dialPositions.charAt(0) - 'A',
+            dialPositions.charAt(1) - 'A',
+            dialPositions.charAt(2) - 'A',
+        };
+    }
+
+    /**
+     * Parses the input rotors string and returns an array of integers representing the rotor indexes.
+     * 
+     * @param rotorsRomanIndexes the input rotors string (e.g., "I II III")
+     * @return an array of integers representing the rotor indexes
+     * @throws IllegalArgumentException if the input string is invalid
+     */
+    public static int[] parseRotorsString(String rotorsRomanIndexes) {
+        String[] c = rotorsRomanIndexes.split(" ");
+        if (c.length != 3)
+            throw new IllegalArgumentException("expecting 3 rotor indexes");
+
+        int[] rotors = new int[3];
+        for (int i = 0; i < rotors.length; i++) {
+            switch (c[i]) {
+                case "0":
+                case "I":
+                    rotors[i] = 0;
+                    break;
+
+                case "2":
+                case "II":
+                    rotors[i] = 1;
+                    break;
+
+                case "3":
+                case "III":
+                    rotors[i] = 2;
+                    break;
+
+                case "4":
+                case "IV":
+                    rotors[i] = 3;
+                    break;
+
+                case "5":
+                case "V":
+                    rotors[i] = 4;
+                    break;
+                default:
+                    throw new IllegalArgumentException("invalid rotor roman index " + c[i]);
+            }
+        }
+
+        return rotors;
+    }
+
     private final int[] table;
     private final int[] reverse;
     private final int notch; // Fixed notch or dial index on which it rotates the next rotor
@@ -513,38 +673,19 @@ public class Rotor {
     }
 
     /**
-     * Sets the dial position of the rotor.
-     * 
-     * @param dialPosition the dial position to set
-     */
-    public void setDial(int dialPosition) {
-        dial = dialPosition;
-    }
-
-    /**
-     * Rotates the rotor. If the rotor reaches its notch position, it rotates the next rotor in the sequence.
-     */
-    void rotate() {
-        if (++dial == notch && nextRotor != null) {
-            nextRotor.rotate();
-        }
-
-        dial %= ROTOR_POSITIONS;
-    }
-
-    /**
      * Processes the input character through the rotor in the forward direction.
      * 
      * @param ch the input character (as an integer)
      * @return the processed character (as an integer)
      */
     public int forward(int ch) {
-        ch += dial;
-        ch %= ROTOR_POSITIONS;
-
+    	assert ch >= 0 && ch < 26: "negative ch " + ch;
+    	
+        ch = (ch + dial) % ROTOR_POSITIONS;
         ch = table[ch];
 
-        return ch;
+    	assert ch >= 0 && ch < 26: "negative ch " + ch;
+       return ch;
     }
 
     /**
@@ -554,11 +695,34 @@ public class Rotor {
      * @return the processed character (as an integer)
      */
     public int reverse(int ch) {
-        ch += dial;
-        ch %= ROTOR_POSITIONS;
-
+    	assert ch >= 0 && ch < 26: "negative ch " + ch;
+    	
+        ch = (ch + dial) % ROTOR_POSITIONS;
         ch = reverse[ch];
 
+    	assert ch >= 0 && ch < 26: "negative ch " + ch;
         return ch;
+    }
+
+    /**
+     * Rotates the rotor. If the rotor reaches its notch position, it rotates the next rotor in the sequence.
+     */
+    void rotate() {
+
+    	dial ++;
+        dial %= ROTOR_POSITIONS;
+
+        if (dial == notch && nextRotor != null) {
+            nextRotor.rotate();
+        }
+    }
+
+    /**
+     * Sets the dial position of the rotor.
+     * 
+     * @param dialPosition the dial position to set
+     */
+    public void setDial(int dialPosition) {
+        dial = dialPosition;
     }
 }

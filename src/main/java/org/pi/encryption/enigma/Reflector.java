@@ -206,24 +206,6 @@ import java.util.Objects;
 public class Reflector {
 
     /**
-     * Parses the input reflector string and returns the corresponding reflector index.
-     * 
-     * @param reflectorString the input reflector string ("B" or "C")
-     * @return the corresponding reflector index
-     * @throws IllegalArgumentException if the input string is invalid
-     */
-    public static int parseReflectorString(String reflectorString) {
-        switch (reflectorString) {
-            case "B":
-                return 0;
-            case "C":
-                return 1;
-            default:
-                throw new IllegalArgumentException("invalid reflector string");
-        }
-    }
-
-    /**
      * Reflector index for Reflector B.
      */
     public static final int REFLECTOR_B = 0;
@@ -296,6 +278,24 @@ public class Reflector {
             11  // Z -> L
         },
     };
+
+    /**
+     * Parses the input reflector string and returns the corresponding reflector index.
+     * 
+     * @param reflectorString the input reflector string ("B" or "C")
+     * @return the corresponding reflector index
+     * @throws IllegalArgumentException if the input string is invalid
+     */
+    public static int parseReflectorString(String reflectorString) {
+        switch (reflectorString) {
+            case "B":
+                return 0;
+            case "C":
+                return 1;
+            default:
+                throw new IllegalArgumentException("invalid reflector string");
+        }
+    }
 
     private final int[] settings;
 
