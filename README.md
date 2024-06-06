@@ -1,4 +1,5 @@
 # EnigmaMachine
+<img src="https://github.com/SecureNetWizard/enigma-machine/assets/166327546/9d22d69d-8d16-45ed-906e-d14e4c52c2b3)" alt="Logo" width="150" height="150">
 
 ## Table of Contents
 
@@ -14,6 +15,7 @@
   - [Plugboard](#plugboard)
   - [Initial Positions](#initial-positions)
 - [Examples](#examples)
+- [Running the Main Method](#running-the-main-method)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -118,6 +120,13 @@ public class Main {
         System.out.println("Decrypted: " + decryptedMessage);
     }
 }
+```
+## Running the Main Method
+You can run the EnigmaMachine.main method using Maven. Make sure you have followed the installation steps before running the main method.
+
+To run the main method, use the following command:
+```
+mvn exec:java
 ```
 
 ## Contributing
