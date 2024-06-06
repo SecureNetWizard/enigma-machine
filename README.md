@@ -15,6 +15,7 @@
   - [Plugboard](#plugboard)
   - [Initial Positions](#initial-positions)
 - [Examples](#examples)
+- [Running the Main Method](#running-the-main-method)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -119,6 +120,13 @@ public class Main {
         System.out.println("Decrypted: " + decryptedMessage);
     }
 }
+```
+## Running the Main Method
+You can run the EnigmaMachine.main method using Maven. Make sure you have followed the installation steps before running the main method.
+
+To run the main method, use the following command:
+```
+mvn exec:java
 ```
 
 ## Contributing
