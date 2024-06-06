@@ -145,9 +145,9 @@ public class EnigmaMachine {
 		enigma.setPlugboard("SZ GT DV KU FO MY EW JN IX LQ");
 		enigma.setInitialPositions('A', 'B', 'C');
 
-		String clear = "HELLO";
-        clear = EnigmaMachine.escape(clear);
+		String clear = "HELLO WORLD";
 		System.out.println("    Clear: " + clear);
+        clear = EnigmaMachine.escape(clear);
 
 		enigma.setInitialPositions("A A A");
 		var cypher = enigma.encrypt(clear);
