@@ -1,4 +1,5 @@
 # EnigmaMachine
+<img src="https://github.com/SecureNetWizard/enigma-machine/assets/166327546/9d22d69d-8d16-45ed-906e-d14e4c52c2b3)" alt="Logo" width="150" height="150">
 
 ## Table of Contents
 
