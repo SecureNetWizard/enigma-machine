@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.pi.encryption.enigma;
+package com.securenetwizard.encryption.enigma;
 
 import java.util.Arrays;
 import java.util.Objects;

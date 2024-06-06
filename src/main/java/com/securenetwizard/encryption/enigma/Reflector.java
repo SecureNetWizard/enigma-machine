@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.pi.encryption.enigma;
+package com.securenetwizard.encryption.enigma;
 
 import java.util.Objects;
 
