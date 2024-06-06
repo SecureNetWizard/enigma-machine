@@ -44,7 +44,7 @@ Ensure you have the following installed:
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/yourusername/enigma-machine.git
+    git clone https://github.com/SecureNetWizard/enigma-machine.git
     cd enigma-machine
     ```
 
