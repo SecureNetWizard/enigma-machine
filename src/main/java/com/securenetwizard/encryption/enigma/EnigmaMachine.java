@@ -23,6 +23,7 @@
  */
 package com.securenetwizard.encryption.enigma;
 
+import java.io.IOException;
 import java.util.stream.IntStream;
 
 /**
@@ -55,6 +56,68 @@ import java.util.stream.IntStream;
  * @since 2023
  */
 public class EnigmaMachine {
+
+	private interface Debug {
+		static final Debug EMPTY = new Debug() {
+			@Override
+			public Debug append(String str) {
+				return this;
+			}
+
+			@Override
+			public void reset() {
+			}
+		};
+
+		static Debug empty() {
+			return EMPTY;
+		}
+
+		static Debug newInstance() {
+			var b = new StringBuilder();
+			return wrap(b, () -> b.setLength(0));
+		}
+
+		static Debug wrap(Appendable out, Runnable reset) {
+			return new Debug() {
+				int flip = 0;
+
+				@Override
+				public String toString() {
+					String str = out.toString();
+					if ((flip++ % 2) == 1)
+						str = new StringBuilder(str).reverse().toString();
+					return str;
+				}
+
+				@Override
+				public Debug append(String str) {
+					try {
+						out.append(str);
+					} catch (IOException e) {}
+
+					return this;
+				}
+
+				@Override
+				public void reset() {
+					reset.run();
+				}
+
+			};
+		}
+
+		default Debug append(int ch) {
+			return append(String.valueOf((char) ('A' + ch)));
+		}
+
+		Debug append(String str);
+
+		/**
+		 * 
+		 */
+		void reset();
+	}
 
 	/**
 	 * Escapes the input text by replacing certain characters with specific
@@ -143,20 +206,21 @@ public class EnigmaMachine {
 		enigma.setRotors("V I IV");
 		enigma.setReflector("B");
 		enigma.setPlugboard("SZ GT DV KU FO MY EW JN IX LQ");
-		enigma.setInitialPositions('A', 'B', 'C');
+		final String initialPositions = "A B C";
+		enigma.setInitialPositions(initialPositions);
 
-		String clear = "HELLO WORLD";
+		String clear = "A";
 		System.out.println("    Clear: " + clear);
-        clear = EnigmaMachine.escape(clear);
+		clear = EnigmaMachine.escape(clear);
 
-		enigma.setInitialPositions("A A A");
+		enigma.setInitialPositions("A B A");
 		var cypher = enigma.encrypt(clear);
 		System.out.println("Encrypted: " + cypher);
 
 		// Reset to the same positions for decryption
-		enigma.setInitialPositions("A A A");
+		enigma.setInitialPositions("A B A");
 		clear = enigma.decrypt(cypher);
-        clear = EnigmaMachine.unescape(clear);
+		clear = EnigmaMachine.unescape(clear);
 		System.out.println("Decrypted: " + clear);
 	}
 
@@ -315,6 +379,8 @@ public class EnigmaMachine {
 		return apply(clearText);
 	}
 
+	Debug DEBUG = Debug.newInstance();
+
 	/**
 	 * Processes the ASCII value through the Enigma machine's components.
 	 *
@@ -322,40 +388,41 @@ public class EnigmaMachine {
 	 * @return the processed ASCII value
 	 */
 	private int process(int ascii) {
-//		System.out.printf("'%c'", 'A' + ascii);
+		DEBUG.reset();
+		DEBUG.append(ascii);
 //		rotor1.rotate();
-		
+
 		char ch;
 		ch = (char) ('A' + ascii);
 
-        ascii = plugboard.exchange(ascii);
-//		System.out.printf("P[%c].", 'A' + ascii);
-		
-        ascii = rotor1.forward(ascii);
-//		System.out.printf("1[%c].", 'A' + ascii);
-		
-        ascii = rotor2.forward(ascii);
-//		System.out.printf("2[%c].", 'A' + ascii);
-		
+		ascii = plugboard.exchange(ascii);
+		DEBUG.append(ascii);
+
+		ascii = rotor1.forward(ascii);
+		DEBUG.append(ascii);
+
+		ascii = rotor2.forward(ascii);
+		DEBUG.append(ascii);
+
 		ascii = rotor3.forward(ascii);
-//		System.out.printf("3[%c].", 'A' + ascii);
+		DEBUG.append(ascii);
 
 		ascii = reflector.reflect(ascii);
-//		System.out.printf("R[%c].", 'A' + ascii);
-		
-		ascii = rotor3.reverse(ascii);
-//		System.out.printf("3[%c].", 'A' + ascii);
-	
-        ascii = rotor2.reverse(ascii);
-//		System.out.printf("2[%c].", 'A' + ascii);
-		
-        ascii = rotor1.reverse(ascii);
-//		System.out.printf("1[%c].", 'A' + ascii);
-		
-        ascii = plugboard.exchange(ascii);
-//		System.out.printf("P[%c].", 'A' + ascii);
+		DEBUG.append(ascii);
 
-//		System.out.printf("'%c'%n", 'A' + ascii);
+		ascii = rotor3.reverse(ascii);
+		DEBUG.append(ascii);
+
+		ascii = rotor2.reverse(ascii);
+		DEBUG.append(ascii);
+
+		ascii = rotor1.reverse(ascii);
+		DEBUG.append(ascii);
+
+		ascii = plugboard.exchange(ascii);
+		DEBUG.append(ascii);
+
+		System.out.println("  Process: " + DEBUG.toString());
 
 		return ascii;
 	}
